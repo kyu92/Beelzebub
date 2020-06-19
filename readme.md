@@ -12,6 +12,6 @@
 # 文件结构
 > root
 >> resources: 资源相关文件
->>> data.json 用户数据即相关配置文件
+  >>> data.json 用户数据即相关配置文件
 >> dist: 打包完成的exe文件
 >> logical.py python脚本
