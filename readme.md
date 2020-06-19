@@ -10,9 +10,8 @@
   *如果使用循环提交模式，submit_on必须设置时间格式，13:00表示下午1点整提交*
 
 # 文件结构
-> root
->> resources: 资源相关文件
->>> data.json 用户数据即相关配置文件
-
->> dist: 打包完成的exe文件
->> logical.py python脚本
+> root  
+>> resources: 资源相关文件  
+>>> data.json 用户数据即相关配置文件  
+>> dist: 打包完成的exe文件  
+>> logical.py python脚本  
