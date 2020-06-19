@@ -6,3 +6,5 @@
 
 * 使用方式：
   * 修改resources/data.json文件的xh和mobile两项即可，分别对应学号和手机号
+  * 若需要放到服务器上自动运行，请将circulate项设置为true,并修改submit_on为指定提交时间  
+  *如果使用循环提交模式，submit_on必须设置时间格式，13:00表示下午1点整提交*
