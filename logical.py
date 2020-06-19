@@ -8,6 +8,7 @@ from threading import Timer
 uid = str(uuid.uuid4())
 submit_flag = False
 
+
 def do_submit(circulate: bool):
     login_data = {
         "jsonrpc": "2.0",
