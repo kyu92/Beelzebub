@@ -95,11 +95,11 @@ def cyc_do(submit_hour: int, submit_minute: int):
     now = datetime.datetime.now()
     now_hour = now.hour
     now_minute = now.minute
-    if now_hour == submit_hour and now_minute > submit_minute and submit_flag:
+    if now_hour == submit_hour and now_minute > submit_minute and submit_flag and 8 < now_hour < 22:
         do_submit(True)
         submit_flag = False
         print(f"当前时间{now}, 开始执行任务")
-    elif now_hour > submit_hour and submit_flag:
+    elif 8 < submit_hour < now_hour < 22 and submit_flag:
         do_submit(True)
         submit_flag = False
         print(f"当前时间{now}, 开始执行任务")
@@ -108,15 +108,18 @@ def cyc_do(submit_hour: int, submit_minute: int):
     Timer(60*60*2, lambda: cyc_do(submit_hour, submit_minute)).start()
 
 
-def reset_flag():
-    time.sleep(60*60*4)
-    global submit_flag
-    global today
-    now = datetime.datetime.date(datetime.datetime.now())
-    if now.day - today.day == 1:
-        print("完成先前签到任务，清除签到flag")
-        submit_flag = True
-        today = now
+def reset_flag(submit_hour: int, submit_minute: int):
+    global submit_flag, today
+    while True:
+        now = datetime.datetime.now()
+        if now.day - today.day == 1:
+            print("日期更新，清除已提交flag")
+            submit_flag = True
+            today = now
+        elif now.day == today.day and (now.hour < submit_hour or (now.hour == submit_hour and now.minute < submit_minute)):
+            print("当天时间未到指定提交时间，清除flag")
+            submit_flag = True
+        time.sleep(60 * 60 * 12)
 
 
 if __name__ == '__main__':
@@ -129,10 +132,12 @@ if __name__ == '__main__':
             minute = int(submit_time[1])
             if hour >= 24 or minute >= 60:
                 raise Exception("时间填写错误")
+            elif not 8 < hour < 22:
+                raise Exception("不在可申报时间段")
             else:
                 print("开始执行循环任务:")
                 cyc_do(hour, minute)
-                reset = Thread(target=reset_flag)
+                reset = Thread(target=reset_flag, args=(hour, minute))
                 reset.setDaemon(True)
                 reset.setName("Thread-Reset_Flag")
                 reset.start()
