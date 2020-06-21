@@ -8,3 +8,11 @@
   * 修改resources/data.json文件的xh和mobile两项即可，分别对应学号和手机号
   * 若需要放到服务器上自动运行，请将circulate项设置为true,并修改submit_on为指定提交时间  
   *如果使用循环提交模式，submit_on必须设置时间格式，13:00表示下午1点整提交*
+
+# 文件结构
+> root  
+>> resources: 资源相关文件  
+>>> data.json 用户数据即相关配置文件  
+
+>> dist: 打包完成的exe文件  
+>> logical.py python脚本  
