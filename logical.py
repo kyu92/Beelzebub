@@ -4,10 +4,12 @@ import uuid
 import time
 import datetime
 from threading import Timer
+from threading import Thread
 
 
 uid = str(uuid.uuid4())
 submit_flag = False
+today = datetime.datetime.date(datetime.datetime.now())
 
 
 def do_submit(circulate: bool):
@@ -107,10 +109,14 @@ def cyc_do(submit_hour: int, submit_minute: int):
 
 
 def reset_flag():
+    time.sleep(60*60*4)
     global submit_flag
-    submit_flag = True
-    print("完成先前签到任务，清除签到flag")
-    Timer(60 * 60 * 24, reset_flag).start()
+    global today
+    now = datetime.datetime.date(datetime.datetime.now())
+    if now.day - today.day == 1:
+        print("完成先前签到任务，清除签到flag")
+        submit_flag = True
+        today = now
 
 
 if __name__ == '__main__':
@@ -126,6 +132,11 @@ if __name__ == '__main__':
             else:
                 print("开始执行循环任务:")
                 cyc_do(hour, minute)
-                reset_flag()
+                reset = Thread(target=reset_flag)
+                reset.setDaemon(True)
+                reset.setName("Thread-Reset_Flag")
+                reset.start()
+                reset.join()
         else:
             do_submit(circulate)
+            input("按任意键继续...")
