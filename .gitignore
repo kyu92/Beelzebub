@@ -2,3 +2,5 @@
 /build
 Beelzebub.spec
 testfile.py
+/process
+/threading

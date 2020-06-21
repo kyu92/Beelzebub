@@ -5,6 +5,7 @@ import time
 import datetime
 from threading import Timer
 
+
 uid = str(uuid.uuid4())
 submit_flag = False
 
@@ -28,6 +29,7 @@ def do_submit(circulate: bool):
             身份证号：{info['sfzh']}
             机构: {info['department']['name_path']}
         ''')
+
         if circulate:
             confirm = 'y'
         else:
@@ -86,7 +88,7 @@ def do_submit(circulate: bool):
         print("未找到用户信息,请确认学号是否正确")
 
 
-def cyc_do(submit_hour: int, submit_minute:int):
+def cyc_do(submit_hour: int, submit_minute: int):
     global submit_flag
     now = datetime.datetime.now()
     now_hour = now.hour
@@ -101,14 +103,14 @@ def cyc_do(submit_hour: int, submit_minute:int):
         print(f"当前时间{now}, 开始执行任务")
     else:
         print(f"当前时间{now}, 未到指定时间")
-    Timer(60*60*2, lambda: cyc_do(submit_hour, submit_minute))
+    Timer(60*60*2, lambda: cyc_do(submit_hour, submit_minute)).start()
 
 
 def reset_flag():
     global submit_flag
     submit_flag = True
-    Timer(60*60*24, reset_flag)
     print("完成先前签到任务，清除签到flag")
+    Timer(60 * 60 * 24, reset_flag).start()
 
 
 if __name__ == '__main__':
@@ -127,4 +129,3 @@ if __name__ == '__main__':
                 reset_flag()
         else:
             do_submit(circulate)
-
