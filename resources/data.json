@@ -1,9 +1,21 @@
 {
-  "xh": "学号",
-  "mobile": "手机号",
+  "xh": "2018703114",
+  "mobile": "18257657990",
   "circulate": false,
   "submit_on": "13:00",
+  "check": 3600,
+  "reset_check": 43200,
   "headers": {
     "user-agent": "Mozilla/5.0 (Linux; Android 7.0; Mi-4c Build/NRD90M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.49 Mobile MQQBrowser/6.2 TBS/043632 Safari/537.36 MicroMessenger/6.6.1.1220(0x26060135) NetType/WIFI Language/zh_CN MicroMessenger/6.6.1.1220(0x26060135) NetType/WIFI Language/zh_CN miniProgram"
+  },
+  "data": {
+    "jrsfzx": "zx",
+    "jrszs": null,
+    "zctwfw": "yx",
+    "zwtwfw": "yx",
+    "jrsfqj": "fou",
+    "jrywrxzz": "wu",
+    "jrsf": "fou",
+    "mqtzjkmys": "lvs"
   }
 }

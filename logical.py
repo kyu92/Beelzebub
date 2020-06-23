@@ -6,13 +6,12 @@ import datetime
 from threading import Timer
 from threading import Thread
 
-
-uid = str(uuid.uuid4())
 submit_flag = False
 today = datetime.datetime.date(datetime.datetime.now())
 
 
 def do_submit(circulate: bool):
+    uid = str(uuid.uuid4())
     login_data = {
         "jsonrpc": "2.0",
         "method": "/v2/login/login",
@@ -63,14 +62,6 @@ def do_submit(circulate: bool):
                             "xy": info['department']['name_path'].split('.')[2],
                             "lxdh": account_info['mobile'],
                             "rq": int(round(time.time() * 1000)),
-                            "jrsfzx": "zx",
-                            "jrszs": None,
-                            "zctwfw": "yx",
-                            "zwtwfw": "yx",
-                            "jrsfqj": "fou",
-                            "jrywrxzz": "wu",
-                            "jrsf": "fou",
-                            "mqtzjkmys": "lvs"
                         },
                         {
                             "service_catalog": "d31f2d28-8956-11ea-9264-8fc0de5ccc83"
@@ -81,16 +72,21 @@ def do_submit(circulate: bool):
                     ]
                 ]
             }
+            for key in account_info['data']:
+                form_data['params'][1][1][key] = account_info['data'][key]
             response = session.post("https://once.tzvcst.edu.cn/mobile/rpc?p=/v2/workorder/action/executeWithValidate",
                                     json=form_data, headers=header)
-            print(response.text)
+            while "error" in json.loads(response.text):
+                print(response.text)
+                do_submit(circulate)
+            print("数据已提交")
         else:
             print("未核实身份，退出程序")
     else:
         print("未找到用户信息,请确认学号是否正确")
 
 
-def cyc_do(submit_hour: int, submit_minute: int):
+def cyc_do(submit_hour: int, submit_minute: int, check: int):
     global submit_flag
     now = datetime.datetime.now()
     now_hour = now.hour
@@ -105,10 +101,10 @@ def cyc_do(submit_hour: int, submit_minute: int):
         print(f"当前时间{now}, 开始执行任务")
     else:
         print(f"当前时间{now}, 未到指定时间")
-    Timer(60*60*2, lambda: cyc_do(submit_hour, submit_minute)).start()
+    Timer(check, lambda: cyc_do(submit_hour, submit_minute)).start()
 
 
-def reset_flag(submit_hour: int, submit_minute: int):
+def reset_flag(submit_hour: int, submit_minute: int, check: int):
     global submit_flag, today
     while True:
         now = datetime.datetime.now()
@@ -119,7 +115,7 @@ def reset_flag(submit_hour: int, submit_minute: int):
         elif now.day == today.day and (now.hour < submit_hour or (now.hour == submit_hour and now.minute < submit_minute)):
             print("当天时间未到指定提交时间，清除flag")
             submit_flag = True
-        time.sleep(60 * 60 * 12)
+        time.sleep(check)
 
 
 if __name__ == '__main__':
@@ -130,14 +126,16 @@ if __name__ == '__main__':
             submit_time = account_info['submit_on'].split(':')
             hour = int(submit_time[0])
             minute = int(submit_time[1])
+            check = account_info['check']
+            reset_check = account_info["reset_check"]
             if hour >= 24 or minute >= 60:
                 raise Exception("时间填写错误")
             elif not 8 < hour < 22:
                 raise Exception("不在可申报时间段")
             else:
                 print("开始执行循环任务:")
-                cyc_do(hour, minute)
-                reset = Thread(target=reset_flag, args=(hour, minute))
+                cyc_do(hour, minute, check)
+                reset = Thread(target=reset_flag, args=(hour, minute, reset_check))
                 reset.setDaemon(True)
                 reset.setName("Thread-Reset_Flag")
                 reset.start()
