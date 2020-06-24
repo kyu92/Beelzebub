@@ -101,7 +101,7 @@ def cyc_do(submit_hour: int, submit_minute: int, check: int):
         print(f"当前时间{now}, 开始执行任务")
     else:
         print(f"当前时间{now}, 未到指定时间")
-    Timer(check, lambda: cyc_do(submit_hour, submit_minute)).start()
+    Timer(check, lambda: cyc_do(submit_hour, submit_minute, check)).start()
 
 
 def reset_flag(submit_hour: int, submit_minute: int, check: int):
